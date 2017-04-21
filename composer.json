@@ -1,0 +1,49 @@
+{
+    "name": "wonail/yii2-adminlte",
+    "description": "yii2-adminlte is a package for yii framework 2 that consists a very popular backend template AdminLTE (based on bootstrap 3).",
+    "keywords": [
+        "yii2",
+        "extension",
+        "back-end",
+        "backend",
+        "admin",
+        "template",
+        "theme",
+        "AdminLTE",
+        "bootstrap 3",
+        "wonail"
+    ],
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "E-Kevin",
+            "email": "e-kevin@qq.com"
+        }
+    ],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "~2.0",
+        "yiisoft/yii2-bootstrap": "~2.0",
+        "rmrevin/yii2-fontawesome": "~2.0",
+        "almasaeed2010/adminlte": "~2.0",
+        "wonail/yii2-widget-scrolltop": "dev-master",
+        "wonail/yii2-base": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "wonail\\adminlte\\": ""
+        }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/Wonail/yii2-widget-scrolltop.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/Wonail/yii2-base.git"
+        }
+    ]
+}
