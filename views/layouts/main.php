@@ -39,10 +39,6 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
     echo Html::csrfMetaTags();
     echo Html::tag('title', Html::encode($this->title));
     ?>
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
     <?php $this->head() ?>
 </head>
 
@@ -69,18 +65,19 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
 
     <?php if (!$isPjax) : //pjax:START ?>
 
+    <?= $this->render(
+        'control_sidebar.php'
+    ) ?>
+
     <?= \wonail\scrolltop\ScrollTop::widget() ?>
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> <?= Yii::$app->params['app.version'] ?>
+            <b>Version</b> <?= Yii::$app->version ?>
         </div>
         <strong>Copyright &copy; <?= Yii::$app->params['app.copyright'] . ' ' . Yii::$app->params['app.name'] ?>.</strong>
+        All rights reserved.
     </footer>
-
-    <?= $this->render(
-        'control_sidebar.php'
-    ) ?>
 
 </div>
 

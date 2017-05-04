@@ -26,7 +26,7 @@
         </form>
         <!-- /.search form -->
 
-        <?= wocenter\adminlte\widgets\Menu::widget(
+        <?= wonail\adminlte\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu'],
                 'items' => [
