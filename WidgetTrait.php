@@ -8,7 +8,7 @@ namespace wonail\adminlte;
 trait WidgetTrait
 {
     
-    protected function uniqidWidget($widgetName)
+    protected function uniqueWidget($widgetName)
     {
         return empty($widgetName) ? $this->getId() : $widgetName . '-' . hash('crc32', \Yii::$app->getRequest()->getUrl() . $this->getId());
     }

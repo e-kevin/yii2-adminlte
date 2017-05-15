@@ -111,7 +111,7 @@ class Box extends Widget
         // Panel widget
         if (!$this->_isBoxWidget) {
             if (empty($this->options['id'])) {
-                $this->options['id'] = $this->uniqidWidget('panel');
+                $this->options['id'] = $this->uniqueWidget('panel');
             }
             Html::addCssClass($this->options, 'box-solid');
             if ($this->type != 'bg-white') {
@@ -120,7 +120,7 @@ class Box extends Widget
         } else {
             // Box widget
             if (empty($this->options['id'])) {
-                $this->options['id'] = $this->uniqidWidget('box');
+                $this->options['id'] = $this->uniqueWidget('box');
             }
             Html::addCssClass($this->options, "box-{$this->type}");
             if ($this->filled) {
