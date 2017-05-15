@@ -14,7 +14,7 @@ use yii\helpers\Html;
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
-        <a data-page-reload="" role="button">
+        <a class="nav-btn" data-page-reload="true" role="button">
             <i class="fa fa-refresh"></i>
         </a>
 

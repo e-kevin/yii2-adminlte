@@ -3,7 +3,7 @@ $(function () {
     /*
      * Add collapse and remove events to boxes And save cookies
      */
-    //$("[data-widget='collapse']").off("click");
+    $("[data-widget='collapse']").off("click");
     $("[data-widget='collapse']").each(function () {
         var box = $(this).parents(".box").first();
         //console.log('found '+box.attr('id') + 'cookstate = ' + $.cookie(box.attr('id')+'_state') );

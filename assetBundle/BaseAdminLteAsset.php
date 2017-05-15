@@ -12,12 +12,15 @@ class BaseAdminLteAsset extends AssetBundle
 {
 
     public $sourcePath = '@vendor/almasaeed2010/adminlte/dist';
+
     public $css = [
 //        'css/AdminLTE.min.css', // 存在谷歌字体，故不加载
     ];
+
     public $js = [
         'js/app.min.js',
     ];
+
     public $depends = [
         'rmrevin\yii\fontawesome\AssetBundle',
         'yii\bootstrap\BootstrapAsset',

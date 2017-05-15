@@ -11,6 +11,7 @@ class AdminLteAsset extends AssetBundle
 {
 
     public $sourcePath = '@wonail/adminlte/assets';
+
     public $css = [
         /**
          * 1、禁止加载谷歌字体
@@ -20,12 +21,18 @@ class AdminLteAsset extends AssetBundle
          * 1、修正媒体查询时表格的响应样式
          */
         'css/fixAdminLTE.min.css',
+//        'css/fixAdminLTE.css',
     ];
+
     public $js = [
-        'js/demo.min.js',
+        'js/console.js',
+        'js/app.js'
     ];
+
     public $depends = [
-        'wonail\adminlte\assetBundle\BaseAdminLteAsset'
+        'yii\widgets\PjaxAsset',
+        'wonail\base\assetBundle\WnAsset',
+        'wonail\adminlte\assetBundle\BaseAdminLteAsset',
     ];
 
 }
