@@ -117,9 +117,6 @@ HTML;
 
     protected function initToggleData()
     {
-        if (!$this->toggleData) {
-            return;
-        }
         $defaultOptions = [
             'maxCount' => 10000,
             'minCount' => 500,
@@ -146,14 +143,14 @@ HTML;
             ],
         ];
         $this->toggleDataOptions = array_replace_recursive($defaultOptions, $this->toggleDataOptions);
-        // 非全页面加载，确保此时的数据总数提示信息`confirmMsg`为最新
-        if (!$this->isFullPageLoad()) {
+        if (!$this->toggleData || !$this->isFullPageLoad()) {
             return;
         }
         foreach (['page', 'all'] as $row) {
-            $cur = $this->toggleDataOptions[$row];
-            $icon = ArrayHelper::remove($cur, 'icon', '');
-            $label = !isset($cur['label']) ? $defaultOptions[$row]['label'] : $cur['label'];
+            $icon = ArrayHelper::remove($this->toggleDataOptions[$row], 'icon', '');
+            $label = !isset($this->toggleDataOptions[$row]['label']) ?
+                $defaultOptions[$row]['label'] :
+                $this->toggleDataOptions[$row]['label'];
             if (!empty($icon)) {
                 $label = "<i class='glyphicon glyphicon-{$icon}'></i> " . $label;
             }
@@ -167,13 +164,14 @@ HTML;
 
     public function renderToggleData()
     {
-        if (!$this->showToggle()) {
+        if (!$this->toggleData) {
             return '';
         }
         $tag = $this->_isShowAll ? 'page' : 'all';
         $options = $this->toggleDataOptions[$tag];
-        $options['data-toggle-mode'] = $this->_isShowAll ? 'all' : 'page';
-        $options['data-toggle-message'] = ArrayHelper::getValue($this->toggleDataOptions, 'confirmMsg', '');
+        if (!$this->showToggle()) {
+            $options['class'] .= ' hide';
+        }
         $label = ArrayHelper::remove($options, 'label', '');
         static::initCss($this->toggleDataContainer, 'btn-group');
 
@@ -183,7 +181,7 @@ HTML;
     protected function genToggleDataScript()
     {
         $this->_toggleScript = '';
-        if (!$this->showToggle()) {
+        if (!$this->toggleData || !$this->isFullPageLoad()) {
             return;
         }
         $view = $this->getView();
@@ -206,30 +204,22 @@ HTML;
         $this->_toggleOptionsVar = 'wnToggleOpts_' . hash('crc32', $opts);
         $view->registerJs("var {$this->_toggleOptionsVar}={$opts};", View::POS_HEAD);
         GridToggleAsset::register($view);
-        $this->_toggleScript = "wnToggleWdiget({$this->_toggleOptionsVar});";
+        $this->_toggleScript = "wnToggleWidget({$this->_toggleOptionsVar});";
     }
 
     protected $_showToggle;
 
     /**
-     * 是否显示切换按钮
+     * 结合js动态显示切换按钮
      */
     protected function showToggle()
     {
         if ($this->_showToggle === null) {
-            if (!$this->isFullPageLoad() || !$this->toggleData || strpos($this->renderToolbar(), '{toggleData}') === false) {
+            if (!$this->toggleData || strpos($this->renderToolbar(), '{toggleData}') === false) {
                 $this->_showToggle = false;
             } else {
                 $maxCount = ArrayHelper::getValue($this->toggleDataOptions, 'maxCount', false);
-                $minCount = ArrayHelper::getValue($this->toggleDataOptions, 'minCount', 0);
-                // 设置显示界限
-                if ($maxCount !== true && (
-                        // 数据总数小于等于最大数目界限则不显示按钮
-                        (!$minCount || (int)$minCount >= $this->dataProvider->getTotalCount()) ||
-                        // 数据总数大于等于最大数目界限则不显示按钮
-                        (!$maxCount || (int)$maxCount <= $this->dataProvider->getTotalCount())
-                    )
-                ) {
+                if ($maxCount !== true && (!$maxCount || (int)$maxCount <= $this->dataProvider->getTotalCount())) {
                     $this->_showToggle = false;
                 } else {
                     $this->_showToggle = true;
@@ -505,9 +495,18 @@ HTML;
 
     public function renderPager()
     {
-        return parent::renderPager() . Html::tag('span', '', [
-            'data-toggle-message' => $this->toggleDataOptions['confirmMsg'],
+        $renderPager = parent::renderPager();
+        $minCount = ArrayHelper::getValue($this->toggleDataOptions, 'minCount', 0);
+        $toggleData = Html::tag('span', '', [
+            'data-toggle-params' => Json::encode([
+                'useToggle' => $this->showToggle() ? 'true' : 'false', // 结合js动态显示切换按钮
+                'mode' => $this->_isShowAll ? 'all' : 'page',
+                'showMessage' => (!$minCount || $minCount >= $this->dataProvider->getTotalCount()) ? 'false' : 'true',
+                'message' => $this->toggleDataOptions['confirmMsg'],
+            ]),
         ]);
+
+        return $this->showToggle() ? $renderPager . $toggleData : $renderPager;
     }
 
     /**

@@ -19,6 +19,7 @@ var wnSearchWidget;
                     options = {
                         box: $('#' + opts.boxId),
                         hideActionList: true,
+                        refreshToggleStatus: true,
                         callback: {
                             normal: function () {
                                 $submitBtn.removeClass('disabled').prop('disabled', false);
@@ -35,16 +36,20 @@ var wnSearchWidget;
                 }
 
                 // 添加数据切换字段，使搜索结果的显示方式前后一致
-                var toggleWidget = options.box.find('[data-widget=toggle]');
+                var toggleParams = options.box.find('[data-toggle-params]'),
+                    toggleBtn = options.box.find('[data-widget=toggle]');
+                if (toggleParams.length) {
+                    var toggleParams = JSON.parse(toggleParams.attr('data-toggle-params')),
+                        mode = toggleParams.mode;
+                }
+
                 if ($('input[name=_toggle]', $form).length == 0) {
                     $form.append($('<input/>').attr({
-                        name: '_toggle', value: toggleWidget.length ?
-                            toggleWidget.attr('data-toggle-mode') :
-                            'page',
+                        name: '_toggle', value: toggleBtn.length ? mode : 'page',
                         type: 'hidden'
                     }));
                 } else {
-                    $('input[name=_toggle]', $form).attr('value', toggleWidget.attr('data-toggle-mode'));
+                    $('input[name=_toggle]', $form).attr('value', toggleBtn.attr('data-toggle-mode'));
                 }
 
                 $.ajax({

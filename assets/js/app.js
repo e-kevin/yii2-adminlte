@@ -168,6 +168,7 @@ function initAppFunctions() {
                 options = {
                     box: $this.closest('.grid-view'),
                     hideActionList: true,
+                    refreshToggleStatus: true,
                     callback: {
                         normal: function () {
                             $this.one($.support.transition.end, function () {
@@ -208,7 +209,8 @@ function initAppFunctions() {
             var $this = $(this),
                 options = {
                     box: $this.closest('.grid-view'),
-                    hideActionList: true
+                    hideActionList: true,
+                    refreshToggleStatus: true,
                 };
             $.ajax({
                 type: 'GET',
@@ -349,13 +351,13 @@ function errorResponse(XMLHttpRequest, errorThrown, options) {
     if (errorThrown === 'Not Found') {
         $(AdminLteApp.$contentWrap).html("<section class='content'>" + XMLHttpRequest.responseText + "</section>");
         if (options.callback !== undefined && typeof options.callback.thrown === 'function') {
-            (options.callback.thrown)();
+            (options.callback.thrown)(data);
         }
     } else {
         wn.notificationBox.error(XMLHttpRequest.responseText ? XMLHttpRequest.responseText : '操作超时，请重新执行', '', 1500);
         if (options.callback !== undefined && typeof options.callback.normal === 'function') {
             setTimeout(function () {
-                (options.callback.normal)();
+                (options.callback.normal)(data);
             }, 1500);
         }
     }
@@ -372,9 +374,10 @@ function successResponse(data, options) {
         box: false,
         hideActionList: false,
         refreshUrl: false, // 更新boxUrl
+        refreshToggleStatus: false,
         callback: false
     };
-    options = options && options.length !== 0 ? window.jQuery.extend({}, defaultOptions, options) : defaultOptions;
+    options = options ? window.jQuery.extend({}, defaultOptions, options) : defaultOptions;
     // 隐藏头部操作栏
     if (options.hideActionList) {
         var hideActionList = function () {
@@ -416,24 +419,43 @@ function successResponse(data, options) {
         }
         if (typeof(options.callback.normal) === 'function') {
             setTimeout(function () {
-                (options.callback.normal)();
+                (options.callback.normal)(data);
             }, time);
         }
     } else {
-        // 添加对切换按钮数据保持最新的支持
-        var $toggleWidget = options.box.find('[data-widget=toggle]');
-        if ($toggleWidget.length) {
-            var $toggleMessage = $(data).find('[data-toggle-message]').attr('data-toggle-message');
-            $toggleWidget.attr('data-toggle-message', $toggleMessage);
-        }
         // 更新列表数据
         options.box.find('.box-body').html($(data).find('.box-body').html());
+        // 更新切换按钮状态
+        if (options.refreshToggleStatus) {
+            refreshToggleStatus();
+        }
         // 隐藏操作按钮
         if (options.hideActionList) {
             hideActionList();
         }
         if (typeof(options.callback.normal) === 'function') {
-            (options.callback.normal)();
+            (options.callback.normal)(data);
+        }
+
+        /**
+         * 更新切换按钮状态
+         */
+        function refreshToggleStatus() {
+            var toggleParams = options.box.find('[data-toggle-params]'),
+                toggleBtn = options.box.find('[data-widget=toggle]');
+            if (toggleBtn.length) {
+                if (toggleParams.length) {
+                    var toggleParams = JSON.parse(toggleParams.attr('data-toggle-params')),
+                        useToggle = toggleParams.useToggle;
+                    if (useToggle) {
+                        toggleBtn.removeClass('hide');
+                    } else {
+                        toggleBtn.addClass('hide');
+                    }
+                } else {
+                    toggleBtn.addClass('hide');
+                }
+            }
         }
     }
 
