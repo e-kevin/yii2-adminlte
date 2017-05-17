@@ -17,7 +17,7 @@ var wnSearchWidget;
                     $submitBtn = $(e.delegateTarget.activeElement),
                     $closeBtn = $submitBtn.closest('.bootstrap-dialog').find('[class=close]'),
                     options = {
-                        box: $('#' + opts.boxId),
+                        $grid: $('#' + opts.boxId),
                         hideActionList: true,
                         refreshToggleStatus: true,
                         callback: {
@@ -36,20 +36,18 @@ var wnSearchWidget;
                 }
 
                 // 添加数据切换字段，使搜索结果的显示方式前后一致
-                var toggleParams = options.box.find('[data-toggle-params]'),
-                    toggleBtn = options.box.find('[data-widget=toggle]');
-                if (toggleParams.length) {
-                    var toggleParams = JSON.parse(toggleParams.attr('data-toggle-params')),
-                        mode = toggleParams.mode;
-                }
+                var $toggleParams = options.$grid.find('[data-toggle-params]'),
+                    mode = $toggleParams.length ?
+                        JSON.parse($toggleParams.attr('data-toggle-params')).mode :
+                        'page';
 
                 if ($('input[name=_toggle]', $form).length == 0) {
                     $form.append($('<input/>').attr({
-                        name: '_toggle', value: toggleBtn.length ? mode : 'page',
+                        name: '_toggle', value: mode,
                         type: 'hidden'
                     }));
                 } else {
-                    $('input[name=_toggle]', $form).attr('value', toggleBtn.attr('data-toggle-mode'));
+                    $('input[name=_toggle]', $form).attr('value', mode);
                 }
 
                 $.ajax({

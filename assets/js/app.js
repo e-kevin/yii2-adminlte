@@ -166,7 +166,7 @@ function initAppFunctions() {
                 $oldIcon = $this.children('i').attr('class'),
                 data,
                 options = {
-                    box: $this.closest('.grid-view'),
+                    $grid: $this.closest('.grid-view'),
                     hideActionList: true,
                     refreshToggleStatus: true,
                     callback: {
@@ -179,7 +179,7 @@ function initAppFunctions() {
                     }
                 };
 
-            if (options.box.attr('data-box-url').indexOf('reload-list') < 0) {
+            if (options.$grid.attr('data-box-url').indexOf('reload-list') < 0) {
                 data = {'reload-list': 'true'};
             }
 
@@ -188,7 +188,7 @@ function initAppFunctions() {
 
             $.ajax({
                 type: 'get',
-                url: options.box.attr('data-box-url'),
+                url: options.$grid.attr('data-box-url'),
                 data: data,
                 timeout: "4000",
                 dataType: "HTML",
@@ -208,7 +208,7 @@ function initAppFunctions() {
         $(document).on('click', '.pagination a', function () {
             var $this = $(this),
                 options = {
-                    box: $this.closest('.grid-view'),
+                    $grid: $this.closest('.grid-view'),
                     hideActionList: true,
                     refreshToggleStatus: true,
                 };
@@ -371,7 +371,7 @@ function errorResponse(XMLHttpRequest, errorThrown, options) {
  */
 function successResponse(data, options) {
     var defaultOptions = {
-        box: false,
+        $grid: false,
         hideActionList: false,
         refreshUrl: false, // 更新boxUrl
         refreshToggleStatus: false,
@@ -381,7 +381,7 @@ function successResponse(data, options) {
     // 隐藏头部操作栏
     if (options.hideActionList) {
         var hideActionList = function () {
-            options.box.find('[data-widget=action-list]').addClass('hide');
+            options.$grid.find('[data-widget=action-list]').addClass('hide');
         };
     }
 
@@ -424,7 +424,7 @@ function successResponse(data, options) {
         }
     } else {
         // 更新列表数据
-        options.box.find('.box-body').html($(data).find('.box-body').html());
+        options.$grid.find('.box-body').html($(data).find('.box-body').html());
         // 更新切换按钮状态
         if (options.refreshToggleStatus) {
             refreshToggleStatus();
@@ -441,19 +441,18 @@ function successResponse(data, options) {
          * 更新切换按钮状态
          */
         function refreshToggleStatus() {
-            var toggleParams = options.box.find('[data-toggle-params]'),
-                toggleBtn = options.box.find('[data-widget=toggle]');
-            if (toggleBtn.length) {
-                if (toggleParams.length) {
-                    var toggleParams = JSON.parse(toggleParams.attr('data-toggle-params')),
-                        useToggle = toggleParams.useToggle;
+            var $toggleParams = options.$grid.find('[data-toggle-params]'),
+                $toggleBtn = options.$grid.find('[data-widget=toggle]');
+            if ($toggleBtn.length) {
+                if ($toggleParams.length) {
+                    var useToggle = JSON.parse($toggleParams.attr('data-toggle-params')).useToggle;
                     if (useToggle) {
-                        toggleBtn.removeClass('hide');
+                        $toggleBtn.removeClass('hide');
                     } else {
-                        toggleBtn.addClass('hide');
+                        $toggleBtn.addClass('hide');
                     }
                 } else {
-                    toggleBtn.addClass('hide');
+                    $toggleBtn.addClass('hide');
                 }
             }
         }
@@ -464,7 +463,7 @@ function successResponse(data, options) {
         // 删除多余参数
         options.refreshUrl = wn.url.deleteQueryString(options.refreshUrl, 'reload-list');
         options.refreshUrl = wn.url.deleteQueryString(options.refreshUrl, 'from-search');
-        options.box.attr('data-box-url', options.refreshUrl);
+        options.$grid.attr('data-box-url', options.refreshUrl);
     }
 }
 

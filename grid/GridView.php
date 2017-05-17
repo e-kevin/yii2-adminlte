@@ -2,8 +2,11 @@
 namespace wonail\adminlte\grid;
 
 use Closure;
+use kartik\dialog\Dialog;
+use kartik\grid\GridPerfectScrollbarAsset;
+use kartik\grid\GridViewAsset;
 use rmrevin\yii\fontawesome\FA;
-use wocenter\Wc;
+use wonail\adminlte\assetBundle\GridExportAsset;
 use wonail\adminlte\assetBundle\GridSearchAsset;
 use wonail\adminlte\assetBundle\GridToggleAsset;
 use Yii;
@@ -13,7 +16,6 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
-use yii\widgets\LinkPager;
 
 class GridView extends \kartik\grid\GridView
 {
@@ -67,17 +69,17 @@ HTML;
     public $floatHeaderOptions = [];
 
     /**
-     * @var string panel|box组件的路由地址，一般在单页面同时显示多个box组件且多个（一个以上）组件的数据来源和当前的路由地址
+     * @var string panel|box组件的路由地址，一般在单页面同时显示多个panel|box组件且多个（一个以上）组件的数据来源和当前的路由地址
      * 不相同时使用，此种情况建议配置[[boxParams]]参数用于标识数据来源的组件用以返回相关数据。
      * 该值为完整的路由地址，如：account/user/index、account/user/forbidden-list，默认值为`Yii::$app->controller->getRoute()`
      */
     public $boxUrl;
 
     /**
-     * @var array panel|box组件的url参数，一般在单页面同时显示多个box组件且多个（一个以上）组件的数据来源和当前的路由地址
+     * @var array panel|box组件的url参数，一般在单页面同时显示多个panel|box组件且多个（一个以上）组件的数据来源和当前的路由地址
      * 不相同时使用，可以用于标识操作来源属于哪个组件。
      * 如['from-box' => 'forbidden-list']，则可在相应的[[Controller]]控制器里根据获取到的`from-box`参数值返回相应结果
-     * 给客户端的组件
+     * 给客户端的组件，避免返回其他多余的数据。
      */
     public $boxParams = [];
 
@@ -183,7 +185,7 @@ HTML;
     protected function genToggleDataScript()
     {
         $this->_toggleScript = '';
-        if (!$this->toggleData || !$this->isFullPageLoad()) {
+        if (!$this->toggleData) {
             return;
         }
         $view = $this->getView();
@@ -509,6 +511,105 @@ HTML;
             'data-toggle' => 'tooltip',
             'title' => $defaultOptions['title'],
         ]);
+    }
+
+    protected function registerAssets()
+    {
+        if (!$this->isFullPageLoad()) {
+            return;
+        }
+        $view = $this->getView();
+        $script = '';
+        if ($this->bootstrap) {
+            GridViewAsset::register($view);
+        }
+        Dialog::widget($this->krajeeDialogSettings);
+        $gridId = $this->options['id'];
+        $NS = '.' . str_replace('-', '_', $gridId);
+        if ($this->export !== false && is_array($this->export) && !empty($this->export)) {
+            GridExportAsset::register($view);
+            $target = ArrayHelper::getValue($this->export, 'target', self::TARGET_BLANK);
+            $gridOpts = Json::encode(
+                [
+                    'gridId' => $gridId,
+                    'target' => $target,
+                    'messages' => $this->export['messages'],
+                    'exportConversions' => $this->exportConversions,
+                    'showConfirmAlert' => ArrayHelper::getValue($this->export, 'showConfirmAlert', true),
+                ]
+            );
+            $gridOptsVar = 'kvGridExp_' . hash('crc32', $gridOpts);
+            $view->registerJs("var {$gridOptsVar}={$gridOpts};", View::POS_HEAD);
+            foreach ($this->exportConfig as $format => $setting) {
+                $id = "$('#{$gridId} .export-{$format}')";
+                $genOpts = Json::encode(
+                    [
+                        'filename' => $setting['filename'],
+                        'showHeader' => $setting['showHeader'],
+                        'showPageSummary' => $setting['showPageSummary'],
+                        'showFooter' => $setting['showFooter'],
+                    ]
+                );
+                $genOptsVar = 'kvGridExp_' . hash('crc32', $genOpts);
+                $view->registerJs("var {$genOptsVar}={$genOpts};", View::POS_HEAD);
+                $expOpts = Json::encode(
+                    [
+                        'dialogLib' => ArrayHelper::getValue($this->krajeeDialogSettings, 'libName', 'krajeeDialog'),
+                        'gridOpts' => new JsExpression($gridOptsVar),
+                        'genOpts' => new JsExpression($genOptsVar),
+                        'alertMsg' => ArrayHelper::getValue($setting, 'alertMsg', false),
+                        'config' => ArrayHelper::getValue($setting, 'config', []),
+                    ]
+                );
+                $expOptsVar = 'kvGridExp_' . hash('crc32', $expOpts);
+                $view->registerJs("var {$expOptsVar}={$expOpts};", View::POS_HEAD);
+                $script .= "{$id}.gridexport({$expOptsVar});";
+            }
+        }
+        $container = '$("#' . $this->containerOptions['id'] . '")';
+        if ($this->resizableColumns) {
+            $rcDefaults = [];
+            if ($this->persistResize) {
+                GridResizeStoreAsset::register($view);
+            } else {
+                $rcDefaults = ['store' => null];
+            }
+            $rcOptions = Json::encode(array_replace_recursive($rcDefaults, $this->resizableColumnsOptions));
+            GridResizeColumnsAsset::register($view);
+            $script .= "{$container}.resizableColumns('destroy').resizableColumns({$rcOptions});";
+        }
+        if ($this->floatHeader) {
+            GridFloatHeadAsset::register($view);
+            // fix floating header for IE browser when using group grid functionality
+            $skipCss = '.kv-grid-group-row,.kv-group-header,.kv-group-footer'; // skip these CSS for IE
+            $js = 'function($table){return $table.find("tbody tr:not(' . $skipCss . '):visible:first>*");}';
+            $opts = [
+                'floatTableClass' => 'kv-table-float',
+                'floatContainerClass' => 'kv-thead-float',
+                'getSizingRow' => new JsExpression($js),
+            ];
+            if ($this->floatOverflowContainer) {
+                $opts['scrollContainer'] = new JsExpression("function(){return {$container};}");
+            }
+            $this->floatHeaderOptions = array_replace_recursive($opts, $this->floatHeaderOptions);
+            $opts = Json::encode($this->floatHeaderOptions);
+            $script .= "$('#{$gridId} .kv-grid-table:first').floatThead({$opts});";
+            // integrate resizeableColumns with floatThead
+            if ($this->resizableColumns) {
+                $script .= "{$container}.off('{$NS}').on('column:resize{$NS}', function(e){" .
+                    "\$('#{$gridId} .kv-grid-table:nth-child(2)').floatThead('reflow');" .
+                    "});";
+            }
+        }
+        if ($this->perfectScrollbar) {
+            GridPerfectScrollbarAsset::register($view);
+            $script .= "{$container}.perfectScrollbar(" . Json::encode($this->perfectScrollbarOptions) . ");";
+        }
+        $this->genToggleDataScript();
+        $script .= $this->_toggleScript;
+        $this->_gridClientFunc = 'kvGridInit_' . hash('crc32', $script);
+        $this->options['data-krajee-grid'] = $this->_gridClientFunc;
+        $view->registerJs("var {$this->_gridClientFunc}=function(){\n{$script}\n};\n{$this->_gridClientFunc}();");
     }
 
     /**

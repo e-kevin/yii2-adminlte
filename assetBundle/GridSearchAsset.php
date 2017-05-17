@@ -2,7 +2,6 @@
 
 namespace wonail\adminlte\assetBundle;
 
-use yii\base\Exception;
 use yii\web\AssetBundle;
 
 class GridSearchAsset extends AssetBundle

@@ -5,7 +5,7 @@ var wnToggleWidget;
         $('#' + opts.boxId + ' [data-widget=toggle]').off('click').on('click', function (e, params) {
             var $btn = $(this),
                 options = {
-                    box: $('#' + opts.boxId),
+                    $grid: $('#' + opts.boxId),
                     hideActionList: true,
                     refreshToggleStatus: true,
                     callback: {
@@ -16,10 +16,10 @@ var wnToggleWidget;
                         }
                     }
                 },
-                toggleParams = options.box.find('[data-toggle-params]');;
+                $toggleParams = options.$grid.find('[data-toggle-params]');
 
-            if (toggleParams.length) {
-                var toggleParams = JSON.parse(toggleParams.attr('data-toggle-params')),
+            if ($toggleParams.length) {
+                var toggleParams = JSON.parse($toggleParams.attr('data-toggle-params')),
                     message = toggleParams.message,
                     mode = toggleParams.mode,
                     showMsg = toggleParams.showMessage === 'true',
@@ -28,7 +28,7 @@ var wnToggleWidget;
                 if (params && params.redirect) {
                     $.ajax({
                         type: 'get',
-                        url: wn.url.setQueryString(options.box.attr('data-box-url'), '_toggle', isPage ? 'all' : 'page'),
+                        url: wn.url.setQueryString(options.$grid.attr('data-box-url'), '_toggle', isPage ? 'all' : 'page'),
                         timeout: "4000",
                         dataType: "HTML",
                         success: function (data) {
