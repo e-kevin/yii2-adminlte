@@ -302,16 +302,16 @@ function initAppFunctions() {
          * Table head check all checkboxes
          */
         $(document).on('change.yiiGridView keydown.yiiGridView', 'table input[type=checkbox]', function () {
-            var container = $(this).closest('.grid-view');
-            toggleHeaderActionList(container.attr('id'), container.find('[data-widget=action-list]'));
+            var $grid = $(this).closest('.grid-view');
+            toggleHeaderActionList($grid.attr('id'), $grid.find('[data-widget=action-list]'));
         });
 
-        function toggleHeaderActionList(container, actionList) {
-            var selectData = $('#' + container).yiiGridView('getSelectedRows');
+        function toggleHeaderActionList(gridId, $actionList) {
+            var selectData = $('#' + gridId).yiiGridView('getSelectedRows');
             if (selectData.length !== 0) {
-                actionList.removeClass("hide");
+                $actionList.removeClass("hide");
             } else {
-                actionList.addClass("hide");
+                $actionList.addClass("hide");
             }
         }
 
