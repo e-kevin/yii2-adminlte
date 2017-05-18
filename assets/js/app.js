@@ -228,6 +228,29 @@ function initAppFunctions() {
             return false;
         });
 
+        $(document).on('click', 'a[data-sort]', function () {
+            var $this = $(this),
+                options = {
+                    $grid: $this.closest('.grid-view'),
+                    hideActionList: true,
+                    refreshToggleStatus: true,
+                };
+            $.ajax({
+                type: 'GET',
+                url: $this.attr('href'),
+                timeout: "4000",
+                dataType: "HTML",
+                success: function (data) {
+                    options.refreshUrl = this.url;
+                    successResponse(data, options);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    errorResponse(XMLHttpRequest, errorThrown, options);
+                }
+            });
+            return false;
+        });
+
         /*
          * All the form submission change to the AJAX mode
          */
