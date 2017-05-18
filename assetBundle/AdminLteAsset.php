@@ -30,7 +30,6 @@ class AdminLteAsset extends AssetBundle
     ];
 
     public $depends = [
-        'yii\widgets\PjaxAsset',
         'wonail\base\assetBundle\WnAsset',
         'wonail\adminlte\assetBundle\BaseAdminLteAsset',
     ];
