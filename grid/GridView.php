@@ -3,7 +3,10 @@ namespace wonail\adminlte\grid;
 
 use Closure;
 use kartik\dialog\Dialog;
+use kartik\grid\GridFloatHeadAsset;
 use kartik\grid\GridPerfectScrollbarAsset;
+use kartik\grid\GridResizeColumnsAsset;
+use kartik\grid\GridResizeStoreAsset;
 use kartik\grid\GridViewAsset;
 use rmrevin\yii\fontawesome\FA;
 use wonail\adminlte\assetBundle\GridExportAsset;
@@ -174,7 +177,7 @@ HTML;
         $tag = $this->_isShowAll ? 'page' : 'all';
         $options = $this->toggleDataOptions[$tag];
         if (!$this->showToggle()) {
-            $options['class'] .= ' hide';
+            Html::addCssClass($options, 'hide');
         }
         $label = ArrayHelper::remove($options, 'label', '');
         static::initCss($this->toggleDataContainer, 'btn-group');
@@ -323,7 +326,7 @@ HTML;
 
             // 重新梳理右侧工具栏的加载流程
             $toolbar = $this->renderToolbar();
-            $export = $toggleData = $refresh = $search = '';
+            $export = $toggleData = $refresh = $search = $remove = $collapse = '';
             if (strpos($toolbar, '{export}') > 0) {
                 $export = $this->renderExport();
             }
@@ -336,12 +339,20 @@ HTML;
             if (strpos($toolbar, '{search}') > 0) {
                 $search = $this->renderSearchButton();
             }
+            if (strpos($toolbar, '{remove}') > 0) {
+                $remove = $this->renderRemoveButton();
+            }
+            if (strpos($toolbar, '{collapse}') > 0) {
+                $collapse = $this->renderCollapseButton();
+            }
             $toolbar = strtr(
                 $toolbar, [
                     '{export}' => $export,
                     '{toggleData}' => $toggleData,
                     '{refresh}' => $refresh,
                     '{search}' => $search,
+                    '{collapse}' => $collapse,
+                    '{remove}' => $remove,
                 ]
             );
 
@@ -412,6 +423,36 @@ HTML;
         }
 
         return $footer;
+    }
+
+    /**
+     * Renders the remove button
+     *
+     * @return string
+     */
+    public function renderRemoveButton()
+    {
+        $options = [
+            'class' => 'btn btn-box-tool',
+            'data-widget' => 'remove',
+            'data-toggle' => 'tooltip',
+        ];
+        return Html::button(FA::i('times'), $options);
+    }
+
+    /**
+     * Renders the collapse button
+     *
+     * @return string
+     */
+    public function renderCollapseButton()
+    {
+        $options = [
+            'class' => 'btn btn-box-tool',
+            'data-widget' => 'collapse',
+            'data-toggle' => 'tooltip',
+        ];
+        return Html::button(FA::i('minus'), $options);
     }
 
     public function renderRefreshButton()

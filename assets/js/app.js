@@ -302,18 +302,46 @@ function initAppFunctions() {
          * Table head check all checkboxes
          */
         $(document).on('change.yiiGridView keydown.yiiGridView', 'table input[type=checkbox]', function () {
-            var $grid = $(this).closest('.grid-view');
-            toggleHeaderActionList($grid.attr('id'), $grid.find('[data-widget=action-list]'));
-        });
+            var $grid = $(this).closest('.grid-view'),
+                selectedCss = 'info',
+                toggleHeaderActionList = function($grid) {
+                    var selectData = $('#' + $grid.attr('id')).yiiGridView('getSelectedRows'),
+                        $actionList = $grid.find('[data-widget=action-list]');
+                    if (selectData.length !== 0) {
+                        $actionList.removeClass("hide");
+                    } else {
+                        $actionList.addClass("hide");
+                    }
+                },
+                highlight = function ($el, $parent) {
+                    var $row = $el.closest('tr'), $cbx = $parent || $el;
+                    if ($cbx.is(':checked') && !$el.attr('disabled')) {
+                        $row.removeClass(selectedCss).addClass(selectedCss);
+                    } else {
+                        $row.removeClass(selectedCss);
+                    }
+                },
+                toggle = function ($cbx, all) {
+                    if (all === true) {
+                        $grid.find(".kv-row-select input").each(function () {
+                            highlight($(this), $cbx);
+                        });
+                        return;
+                    }
+                    highlight($cbx);
+                };
+            // select all
+            $grid.find("th .wn-checkbox input").on('change', function () {
+                toggle($(this), true);
+            });
+            $grid.find("td .wn-checkbox input").on('change', function () {
+                toggle($(this));
+            }).each(function () {
+                toggle($(this));
+            });
 
-        function toggleHeaderActionList(gridId, $actionList) {
-            var selectData = $('#' + gridId).yiiGridView('getSelectedRows');
-            if (selectData.length !== 0) {
-                $actionList.removeClass("hide");
-            } else {
-                $actionList.addClass("hide");
-            }
-        }
+            toggleHeaderActionList($grid);
+        });
 
         /*
          * form添加noEnter属性，禁止文本框回车提交
