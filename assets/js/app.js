@@ -376,16 +376,21 @@ $.ajaxSetup({
  * @param options 配置信息
  */
 function errorResponse(XMLHttpRequest, errorThrown, options) {
+    var defaultOptions = {
+        $grid: false,
+        callback: false
+    };
+    options = options ? window.jQuery.extend({}, defaultOptions, options) : defaultOptions;
     if (errorThrown === 'Not Found') {
         $(AdminLteApp.$contentWrap).html("<section class='content'>" + XMLHttpRequest.responseText + "</section>");
-        if (options.callback !== undefined && typeof options.callback.thrown === 'function') {
+        if (typeof options.callback.thrown === 'function') {
             (options.callback.thrown)(data);
         }
     } else {
         wn.notificationBox.error(XMLHttpRequest.responseText ? XMLHttpRequest.responseText : '操作超时，请重新执行', '', 1500);
-        if (options.callback !== undefined && typeof options.callback.normal === 'function') {
+        if (typeof options.callback.thrown === 'function') {
             setTimeout(function () {
-                (options.callback.normal)(data);
+                (options.callback.thrown)(data);
             }, 1500);
         }
     }

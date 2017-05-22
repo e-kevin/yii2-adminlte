@@ -107,7 +107,7 @@ Once the extension is installed, simply use it in your code by  :
 \wonail\adminlte\widgets\Box::widget([
     'type' => wonail\adminlte\AdminLTE::TYPE_PRIMARY,
     'header' => 'Box widget',
-    'body' => 'This is a box widget.'，
+    'body' => 'This is a box widget.',
     'collapsable' => true,
 ]);
 ?>

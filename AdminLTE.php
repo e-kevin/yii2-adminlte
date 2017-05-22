@@ -1,5 +1,4 @@
 <?php
-
 namespace wonail\adminlte;
 
 class AdminLTE
@@ -35,10 +34,30 @@ class AdminLTE
     const BG_PURPLE_ACTIVE = 'bg-purple-active';
     const BG_MAROON_ACTIVE = 'bg-maroon-active';
     const BG_BLACK_ACTIVE = 'bg-black-active';
-    const TYPE_SUCCESS = 'success';
-    const TYPE_INFO = 'info';
-    const TYPE_DANGER = 'danger';
-    const TYPE_WARNING = 'warning';
+
+    /**
+     * The **default** bootstrap contextual color type
+     */
+    const TYPE_DEFAULT = 'default';
+    /**
+     * The **primary** bootstrap contextual color type
+     */
     const TYPE_PRIMARY = 'primary';
+    /**
+     * The **information** bootstrap contextual color type
+     */
+    const TYPE_INFO = 'info';
+    /**
+     * The **danger** bootstrap contextual color type
+     */
+    const TYPE_DANGER = 'danger';
+    /**
+     * The **warning** bootstrap contextual color type
+     */
+    const TYPE_WARNING = 'warning';
+    /**
+     * The **success** bootstrap contextual color type
+     */
+    const TYPE_SUCCESS = 'success';
 
 }

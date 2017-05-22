@@ -1,7 +1,6 @@
 <?php
 namespace wonail\adminlte\grid;
 
-use Closure;
 use yii\helpers\Html;
 
 /**

@@ -2,32 +2,34 @@
 namespace wonail\adminlte\grid;
 
 use Closure;
+use kartik\base\TranslationTrait;
 use kartik\dialog\Dialog;
 use kartik\grid\GridFloatHeadAsset;
 use kartik\grid\GridPerfectScrollbarAsset;
 use kartik\grid\GridResizeColumnsAsset;
 use kartik\grid\GridResizeStoreAsset;
 use kartik\grid\GridViewAsset;
-use rmrevin\yii\fontawesome\FA;
 use wonail\adminlte\assetBundle\GridExportAsset;
-use wonail\adminlte\assetBundle\GridSearchAsset;
 use wonail\adminlte\assetBundle\GridToggleAsset;
+use wonail\adminlte\ToolbarTrait;
+use wonail\adminlte\WidgetTrait;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
 
 class GridView extends \kartik\grid\GridView
 {
 
+    use TranslationTrait;
+    use ToolbarTrait;
+    use WidgetTrait;
+
     public $bordered = false;
 
     public $hover = true;
-
-    public $emptyText = 'aOh! 暂时还没有内容! ';
 
     public $emptyTextOptions = ['class' => 'text-center'];
 
@@ -72,28 +74,13 @@ HTML;
     public $floatHeaderOptions = [];
 
     /**
-     * @var string panel|box组件的路由地址，一般在单页面同时显示多个panel|box组件且多个（一个以上）组件的数据来源和当前的路由地址
-     * 不相同时使用，此种情况建议配置[[boxParams]]参数用于标识数据来源的组件用以返回相关数据。
-     * 该值为完整的路由地址，如：account/user/index、account/user/forbidden-list，默认值为`Yii::$app->controller->getRoute()`
-     */
-    public $boxUrl;
-
-    /**
-     * @var array panel|box组件的url参数，一般在单页面同时显示多个panel|box组件且多个（一个以上）组件的数据来源和当前的路由地址
-     * 不相同时使用，可以用于标识操作来源属于哪个组件。
-     * 如['from-box' => 'forbidden-list']，则可在相应的[[Controller]]控制器里根据获取到的`from-box`参数值返回相应结果
-     * 给客户端的组件，避免返回其他多余的数据。
-     */
-    public $boxParams = [];
-
-    /**
      * @var array 搜索按钮的配置数组
-     *  - `title`:_string_ Dialog模态框的标题，默认为`Yii::t('wocenter/app', 'Search')`
+     *  - `title`:_string_ Dialog模态框的标题，默认为`Yii::t('adminlte', 'Search')`
      *  - `url`:_string_ 搜索页面的路由地址，默认为`search`
      *  - `params`:_array_ 搜索页面路由地址的附加参数，默认为`['referer' => $this->baseUrl']`
-     *  - `searchLabel`:_string_ 搜索按钮的标签，默认为`Yii::t('wocenter/app', 'Search')`
-     *  - `closeLabel`:_string_ 关闭按钮的标签，默认为`Yii::t('wocenter/app', 'Close') . '(Esc)'`
-     *  - `resetLabel`:_string_ 重置按钮的标签，默认为`Yii::t('wocenter/app', 'Reset')`
+     *  - `searchLabel`:_string_ 搜索按钮的标签，默认为`Yii::t('adminlte', 'Search')`
+     *  - `closeLabel`:_string_ 关闭按钮的标签，默认为`Yii::t('adminlte', 'Close') . '(Esc)'`
+     *  - `resetLabel`:_string_ 重置按钮的标签，默认为`Yii::t('adminlte', 'Reset')`
      *  - `size`:_string_ 模态框的大小类型，默认为`size-wide`，可选至有`default`，`size-wide`，`size-large`
      */
     public $searchOptions = [];
@@ -105,6 +92,9 @@ HTML;
 
     public function init()
     {
+        $this->initI18N('@wonail/adminlte', 'adminlte');
+        $this->emptyText = $this->emptyText ?: Yii::t('adminlte', 'Empty text');
+
         parent::init();
 
         $this->formatter->nullDisplay = 'N/A';
@@ -423,135 +413,6 @@ HTML;
         }
 
         return $footer;
-    }
-
-    /**
-     * Renders the remove button
-     *
-     * @return string
-     */
-    public function renderRemoveButton()
-    {
-        $options = [
-            'class' => 'btn btn-box-tool',
-            'data-widget' => 'remove',
-            'data-toggle' => 'tooltip',
-        ];
-        return Html::button(FA::i('times'), $options);
-    }
-
-    /**
-     * Renders the collapse button
-     *
-     * @return string
-     */
-    public function renderCollapseButton()
-    {
-        $options = [
-            'class' => 'btn btn-box-tool',
-            'data-widget' => 'collapse',
-            'data-toggle' => 'tooltip',
-        ];
-        return Html::button(FA::i('minus'), $options);
-    }
-
-    public function renderRefreshButton()
-    {
-        $options = [
-            'class' => 'btn btn-box-tool',
-            'data-widget' => 'reload-list',
-            'data-toggle' => 'tooltip',
-            'title' => Yii::t('wocenter/app', 'Refresh'),
-        ];
-
-        return Html::button(FA::i(FA::_REFRESH), $options);
-    }
-
-    public function renderGobackButton()
-    {
-        $options = [
-            'class' => 'btn',
-            'data-widget' => 'goback',
-            'data-toggle' => 'tooltip',
-            'title' => Yii::t('wocenter/app', 'Go back'),
-        ];
-
-        return Html::button(FA::i(FA::_ARROW_LEFT), $options);
-    }
-
-    public function renderSearchButton()
-    {
-        $view = $this->getView();
-        $defaultOptions = [
-            'title' => Yii::t('wocenter/app', 'Search'),
-            'url' => 'search',
-            'params' => ['referer' => $this->boxUrl],
-            'searchLabel' => Yii::t('wocenter/app', 'Search'),
-            'closeLabel' => Yii::t('wocenter/app', 'Close') . '(Esc)',
-            'resetLabel' => Yii::t('wocenter/app', 'Reset'),
-            'size' => 'size-wide',
-        ];
-        $options = array_replace_recursive($defaultOptions, $this->searchOptions);
-        $searchDialogId = $this->options['id'] . '-search-dialog';
-
-        // 打开搜索模态框时删除`_toggle`,`page`,`per-page`参数，以免[[Controller::display]]无法正确渲染视图
-        $params = "var boxUrl=$('#{$this->options['id']}').attr('data-box-url');" .
-            "boxUrl=wn.url.deleteQueryString(boxUrl, 'page');" .
-            "boxUrl=wn.url.deleteQueryString(boxUrl, 'per-page');" .
-            "boxUrl=wn.url.deleteQueryString(boxUrl, '_toggle');" .
-            "var boxParams=((pos=boxUrl.indexOf('?')) !== -1)?boxUrl.substring(pos+1):'';";
-        $bdAjaxOpts = Json::encode([
-            'type' => 'get',
-            'url' => Url::toRoute(array_merge((array)ArrayHelper::remove($options, 'url'), ArrayHelper::remove($options, 'params'))),
-            'data' => new JsExpression('boxParams'), // 添加搜索条件或其他附加参数
-            'timeout' => "4000",
-            'dataType' => "HTML",
-            'success' => new JsExpression("function(data){addToDialog(data, dialog, '{$searchDialogId}');}"),
-            'error' => new JsExpression("function(XMLHttpRequest, textStatus, errorThrown){gridErrorResponse(XMLHttpRequest, errorThrown);}"),
-        ]);
-        $opts = Json::encode([
-            'title' => ArrayHelper::remove($options, 'title'),
-            'size' => ArrayHelper::remove($options, 'size'),
-            'message' => new JsExpression("function(dialog){{$params}$.ajax($bdAjaxOpts);}"),
-            'buttons' => [
-                [
-                    'id' => 'submit',
-                    'label' => ArrayHelper::remove($options, 'searchLabel'),
-                    'cssClass' => 'btn-success',
-                    'action' => new JsExpression('function(){$("#search_div").trigger("submit");}'),
-                ],
-                [
-                    'id' => 'reset',
-                    'label' => ArrayHelper::remove($options, 'resetLabel'),
-                    'action' => new JsExpression('function(){$("#search_div").trigger("reset");}'),
-                ],
-                [
-                    'id' => 'close',
-                    'label' => ArrayHelper::remove($options, 'closeLabel'),
-                    'action' => new JsExpression('function(dialogRef){dialogRef.close();}'),
-                ],
-            ],
-        ]);
-
-        $widgetSearchOpts = 'wnSearchOpts_' . hash('crc32', $opts);
-        $view->registerJs("var {$widgetSearchOpts}={$opts}", View::POS_HEAD);
-
-        $widgetSearch = 'wnSearchWidget_' . hash('crc32', "#{$this->options['id']} [data-widget=search]");
-        $opts = Json::encode([
-            'boxId' => $this->options['id'],
-            'dialogId' => $searchDialogId,
-            'widgetSearch' => new JsExpression("{$widgetSearch}"),
-        ]);
-        $view->registerJs("var {$widgetSearch}=new BootstrapDialog({$widgetSearchOpts});\nwnSearchWidget({$opts});");
-
-        GridSearchAsset::register($view);
-
-        return Html::button(FA::i(FA::_SEARCH), [
-            'class' => 'btn btn-box-tool',
-            'data-widget' => 'search',
-            'data-toggle' => 'tooltip',
-            'title' => $defaultOptions['title'],
-        ]);
     }
 
     protected function registerAssets()

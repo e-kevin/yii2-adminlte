@@ -23,7 +23,7 @@ class BaseAdminLteAsset extends AssetBundle
 
     public $depends = [
         'rmrevin\yii\fontawesome\AssetBundle',
-        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
         'wonail\base\assetBundle\Html5ShivAsset',
         'wonail\base\assetBundle\RespondAsset',
     ];

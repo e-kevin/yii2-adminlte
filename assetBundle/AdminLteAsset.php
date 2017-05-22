@@ -21,7 +21,6 @@ class AdminLteAsset extends AssetBundle
          * 1、修正媒体查询时表格的响应样式
          */
         'css/fixAdminLTE.min.css',
-//        'css/fixAdminLTE.css',
     ];
 
     public $js = [

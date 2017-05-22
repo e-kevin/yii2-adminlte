@@ -9,7 +9,7 @@ class ExtAdminlteAsset extends AssetBundle
 
     public $sourcePath = '@wonail/adminlte/assets';
     public $js = [
-        'js/admlteext.min.js',
+        'js/admlteext.js',
     ];
     public $depends = [
         'wonail\adminlte\assetBundle\AdminLteAsset',
