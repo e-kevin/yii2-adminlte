@@ -93,10 +93,9 @@ Once the extension is installed, simply use it in your code by  :
 ```php
 <?=
 \wonail\adminlte\widgets\Box::widget([
-    "type" => \wonail\adminlte\AdminLTE::BG_AQUA,
-    "header" => "Panel widget",
+    'header' => 'Panel widget',
     'body' => 'This is a panel widget.',
-    'collapsable' => true,
+    'isPanel' => true,
 ]);
 ?>
 ```
@@ -105,10 +104,8 @@ Once the extension is installed, simply use it in your code by  :
 ```php
 <?=
 \wonail\adminlte\widgets\Box::widget([
-    'type' => wonail\adminlte\AdminLTE::TYPE_PRIMARY,
     'header' => 'Box widget',
     'body' => 'This is a box widget.',
-    'collapsable' => true,
 ]);
 ?>
 ```
