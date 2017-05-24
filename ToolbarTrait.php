@@ -31,7 +31,6 @@ trait ToolbarTrait
         $options = array_replace_recursive([
             'class' => 'btn btn-box-tool',
             'data-widget' => 'remove',
-            'data-toggle' => 'tooltip',
         ], $options);
 
         return Html::button(FA::i('times'), $options);

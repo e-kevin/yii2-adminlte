@@ -22,7 +22,7 @@ use yii\helpers\Html;
  * ```php
  * Yii::$app->session->setFlash('error', ['Error 1', 'Error 2']);
  * ```
- *todo 允许自定义header、icon
+ * todo 允许自定义header、icon
  */
 class FlashAlert extends Widget
 {

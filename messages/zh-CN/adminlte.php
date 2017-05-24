@@ -9,5 +9,4 @@ return [
     'Save' => '保存',
     'Empty text' => 'aOh! 暂时还没有内容! ',
     'Please choose' => '请选择',
-    'Unlimited' => '不限',
 ];

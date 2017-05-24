@@ -34,15 +34,21 @@ a.nav-btn:hover {
 /*
 * Box Widget
 */
-.box-header > .box-tools {
-    top: 6px;
+.box-header {
+    height: 42px;
 }
 
-.btn-box-tool {
-    background: transparent none repeat scroll 0 0;
-    color: #97a0b3;
+.box-header > .box-left-tools {
+    margin-top: -4px;
+}
+
+.box-header .btn {
+    padding: 4px 10px;
+}
+
+.box-header > .box-tools [data-widget], .box-header > .box-tools .btn-group .btn {
+    top: 3px;
     font-size: 14px;
-    padding: 5px;
 }
 
 .box-body > .table {

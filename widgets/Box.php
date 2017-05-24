@@ -274,7 +274,7 @@ HTML;
                 ]
             );
             $leftToolbar = Html::tag('div', $leftToolbar, [
-                'class' => 'pull-left',
+                'class' => 'box-left-tools pull-left',
             ]);
         }
         $replace['{leftToolbar}'] = $leftToolbar;
@@ -297,7 +297,6 @@ HTML;
             );
             $rightToolbar = Html::tag('div', $rightToolbar, [
                 'class' => 'box-tools pull-right',
-                'style' => !empty($leftToolbar) ? 'top:12px' : null, // 修正样式
             ]);
         }
         $replace['{rightToolbar}'] = $rightToolbar;

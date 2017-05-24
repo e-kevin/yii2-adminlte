@@ -40,7 +40,7 @@ class GridView extends \kartik\grid\GridView
      */
     public $panelHeadingTemplate = <<< HTML
     {toolbar}
-    <h3 class="box-title">
+    <h3 class="box-title pull-left">
         {heading}
     </h3>
     {headerToolbar}
@@ -53,8 +53,13 @@ HTML;
 
     public $toolbar = [];
 
+    public $exportContainer = [
+        'data-toggle' => 'tooltip',
+    ];
+
     public $export = [
         'options' => [
+            'title' => null,
             'class' => 'btn btn-box-tool',
         ],
         'menuOptions' => [
@@ -97,6 +102,7 @@ HTML;
 
         parent::init();
 
+        $this->exportContainer['title'] = Yii::t('kvgrid', 'Export');
         $this->formatter->nullDisplay = 'N/A';
         $this->boxUrl = $this->boxUrl ?: Yii::$app->controller->getRoute();
         // 重新获取toggle类型
@@ -245,7 +251,7 @@ HTML;
 
     protected function renderPanel()
     {
-        if (!$this->isFullPageLoad() || !$this->bootstrap || !is_array($this->panel) || empty($this->panel)) {
+        if (!$this->isFullPageLoad() || !$this->bootstrap || !is_array($this->panel) || (empty($this->panel) && empty($this->toolbar))) {
             return;
         }
         $type = ArrayHelper::getValue($this->panel, 'type', parent::TYPE_DEFAULT);
@@ -351,8 +357,8 @@ HTML;
             if ($headerToolbar != false) {
                 if (strpos($this->layout, '{headerToolbar}') > 0) {
                     $replace['{headerToolbar}'] = Html::tag('div', $headerToolbar, [
-                        'class' => 'pull-left',
-                        'style' => !empty(ArrayHelper::getValue($this->panel, 'heading', '')) ? 'margin-left:5px' : '',
+                        'class' => 'box-left-tools pull-left',
+                        'style' => !empty(ArrayHelper::getValue($this->panel, 'heading', '')) ? 'margin-left:5px' : null,
                     ]);
                 }
             } else {
@@ -361,7 +367,6 @@ HTML;
 
             $replace['{toolbar}'] = Html::tag('div', $toolbar, [
                 'class' => 'box-tools pull-right',
-                'style' => !empty($replace['{headerToolbar}']) ? 'top:14px' : '', // 修正样式
             ]);
 
             $this->layout = strtr($this->layout, $replace);
@@ -381,7 +386,8 @@ HTML;
     {
         // 是否隐藏顶部条
         $heading = ArrayHelper::getValue($this->panel, 'heading', '');
-        if (empty($heading) && empty($this->toolbar)) {
+        $headerToolbar = ArrayHelper::getValue($this->panel, 'headerToolbar', '');
+        if (empty($heading) && empty($headerToolbar) && empty($this->toolbar)) {
             return false;
         }
 
