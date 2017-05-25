@@ -58,7 +58,7 @@ class ActiveForm extends baseActiveForm
     public function defaultButtons($options = [])
     {
         $buttons['submit'] = !isset($options['submit']) ?
-            Html::submitButton(Yii::t('adminlte', 'Save'), ['class' => 'btn btn-success btn-w-200']) :
+            Html::submitButton(Yii::t('adminlte', 'Save'), ['class' => 'btn btn-success width-200']) :
             $options['submit'];
         $buttons['reset'] = !isset($options['reset']) ?
             Html::resetButton(Yii::t('adminlte', 'Reset'), ['class' => 'btn btn-default']) :
