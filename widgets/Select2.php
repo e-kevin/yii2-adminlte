@@ -3,6 +3,12 @@ namespace wonail\adminlte\widgets;
 
 use kartik\select2\Select2Asset;
 
+/**
+ * Class Select2
+ *
+ * @package wonail\adminlte\widgets
+ * @see https://select2.github.io/examples.html
+ */
 class Select2 extends \kartik\select2\Select2
 {
 
