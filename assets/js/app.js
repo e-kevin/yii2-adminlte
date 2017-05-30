@@ -459,24 +459,8 @@ function successResponse(data, options) {
             }, time);
         }
     } else {
-        // 更新列表数据
-        options.$grid.find('.box-body').html($(data).find('.box-body').html());
         // 更新切换按钮状态
-        if (options.refreshToggleStatus) {
-            refreshToggleStatus();
-        }
-        // 隐藏操作按钮
-        if (options.hideActionList) {
-            hideActionList();
-        }
-        if (typeof(options.callback.normal) === 'function') {
-            (options.callback.normal)(data);
-        }
-
-        /**
-         * 更新切换按钮状态
-         */
-        function refreshToggleStatus() {
+        var refreshToggleStatus = function() {
             var $toggleParams = options.$grid.find('[data-toggle-params]'),
                 $toggleBtn = options.$grid.find('[data-widget=toggle]');
             if ($toggleBtn.length) {
@@ -491,6 +475,19 @@ function successResponse(data, options) {
                     $toggleBtn.addClass('hide');
                 }
             }
+        }
+        // 更新列表数据
+        options.$grid.find('.box-body').html($(data).find('.box-body').html());
+        // 更新切换按钮状态
+        if (options.refreshToggleStatus) {
+            refreshToggleStatus();
+        }
+        // 隐藏操作按钮
+        if (options.hideActionList) {
+            hideActionList();
+        }
+        if (typeof(options.callback.normal) === 'function') {
+            (options.callback.normal)(data);
         }
     }
 
