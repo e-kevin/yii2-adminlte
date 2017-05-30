@@ -436,6 +436,9 @@ function successResponse(data, options) {
         }
         if (data.jumpUrl == 'reload-list') {
             $('[data-widget=reload-list]').trigger('click');
+        } else if (data.jumpUrl == 'reload-page') {
+            $('[data-page-reload]').trigger('click');
+            return;
         } else if (data.jumpUrl) {
             setTimeout(function () {
                 if (AdminLteApp.pjaxEnabled) {
