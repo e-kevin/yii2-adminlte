@@ -22,6 +22,7 @@ class BaseAdminLteAsset extends AssetBundle
     ];
 
     public $depends = [
+        'yii\widgets\PjaxAsset',
         'rmrevin\yii\fontawesome\AssetBundle',
         'yii\bootstrap\BootstrapPluginAsset',
         'wonail\base\assetBundle\Html5ShivAsset',
