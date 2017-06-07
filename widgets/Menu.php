@@ -62,13 +62,13 @@ class Menu extends \yii\widgets\Menu
             $template = ArrayHelper::getValue($item, 'template', $linkTemplate);
             $replace = [
                 '{url}' => Html::encode(Url::to($item['url'])),
-                '{label}' => $item[$this->labelField],
+                '{label}' => Html::tag('span', $item[$this->labelField]),
                 '{icon}' => !empty($item[$this->iconField]) ? FA::i($item[$this->iconField]) : $submenuDefaultIcon,
             ];
         } else {
             $template = ArrayHelper::getValue($item, 'template', $labelTemplate);
             $replace = [
-                '{label}' => $item[$this->labelField],
+                '{label}' => Html::tag('span', $item[$this->labelField]),
                 '{icon}' => !empty($item[$this->iconField]) ? FA::i($item[$this->iconField]) : null,
             ];
         }
