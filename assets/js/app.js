@@ -8,6 +8,10 @@ window.PJAX_ENABLED = true;
  */
 window.DEBUG = true;
 
+var AdminLTEOptions = {
+    animationSpeed: 'fast'
+};
+
 $(function () {
     /**
      * @constructor
@@ -15,12 +19,10 @@ $(function () {
     var AdminLteApp = function () {
         this.pjaxEnabled = window.PJAX_ENABLED;
         this.debug = window.DEBUG;
-        this.$sidebar = $('.main-sidebar');
+        this.$sidebar = $('.sidebar');
         this.$contentWrap = '#content-wrapper';
         this.$loaderWrap = $('#loader');
         this.loading = false;
-
-        this._changeActiveNavigationItem();
 
         if (this.pjaxEnabled) {
             /**
@@ -54,9 +56,49 @@ $(function () {
      * @private
      */
     AdminLteApp.prototype._changeActiveNavigationItem = function (event, xhr, options) {
-        var $newActiveLink = this.$sidebar.find('.sidebar-menu a[href ="' + $("#navSelectPage").val() + '"]');
-        this.$sidebar.find('.active').removeClass('active');
-        $newActiveLink.closest('li').addClass('active');
+        var that = this,
+            animationSpeed = $.AdminLTE.options.animationSpeed,
+            $oldActiveMenu = that.$sidebar.find('ul.treeview-menu:visible'),
+            $newActiveLink = that.$sidebar.find('.sidebar-menu a[href ="' + $('#navSelectPage').val() + '"]'),
+            $newActiveMenu = $newActiveLink.parents('ul').first();
+
+        if (!$('body').hasClass('sidebar-collapse')) {
+            // 当前激活菜单的父级菜单已打开
+            if ($newActiveMenu.is(':visible')) {
+                // 当前链接处于当前打开的子菜单，则失活旧的激活菜单
+                if ($newActiveMenu.hasClass('treeview-menu')) {
+                    $newActiveMenu.find('.active').removeClass('active');
+                }
+                // 当前菜单属于顶级菜单
+                else if ($newActiveMenu.hasClass('sidebar-menu')) {
+                    // 取消所有已经激活的菜单
+                    that.$sidebar.find('.active').removeClass('active');
+                    // 折叠所有已经打开的菜单组
+                    $oldActiveMenu.slideUp(animationSpeed, function () {
+                        $(this).removeClass('menu-open');
+                    });
+                }
+            }
+            // 当前激活菜单的父级菜单未打开
+            else {
+                // 取消所有已经激活的菜单
+                that.$sidebar.find('.active').removeClass('active');
+                // 折叠所有已经打开的菜单组
+                $oldActiveMenu.slideUp(animationSpeed, function () {
+                    $(this).removeClass('menu-open');
+                });
+
+                // 打开当前激活菜单的所有父级菜单组
+                var $parents = $newActiveLink.parents('ul:not(.sidebar-menu)');
+                $parents.slideDown(animationSpeed, function () {
+                    $(this).addClass('menu-open');
+                    $(this).parent('li').addClass('active');
+                    $.AdminLTE.layout.fix();
+                });
+            }
+            // 激活新菜单
+            $newActiveLink.parent('li').addClass('active');
+        }
     };
 
     AdminLteApp.prototype.extractPageName = function (url) {
@@ -304,7 +346,7 @@ function initAppFunctions() {
         $(document).on('change.yiiGridView keydown.yiiGridView', 'table input[type=checkbox]', function () {
             var $grid = $(this).closest('.grid-view'),
                 selectedCss = 'info',
-                toggleHeaderActionList = function($grid) {
+                toggleHeaderActionList = function ($grid) {
                     var selectData = $('#' + $grid.attr('id')).yiiGridView('getSelectedRows'),
                         $actionList = $grid.find('[data-widget=action-list]');
                     if (selectData.length !== 0) {
@@ -460,7 +502,7 @@ function successResponse(data, options) {
         }
     } else {
         // 更新切换按钮状态
-        var refreshToggleStatus = function() {
+        var refreshToggleStatus = function () {
             var $toggleParams = options.$grid.find('[data-toggle-params]'),
                 $toggleBtn = options.$grid.find('[data-widget=toggle]');
             if ($toggleBtn.length) {
