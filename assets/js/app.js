@@ -88,7 +88,6 @@ $(function () {
                     $(this).removeClass('menu-open');
                 });
 
-                // 打开当前激活菜单的所有父级菜单组
                 var $parents = $newActiveLink.parents('ul:not(.sidebar-menu)');
                 $parents.slideDown(animationSpeed, function () {
                     $(this).addClass('menu-open');
@@ -483,15 +482,19 @@ function successResponse(data, options) {
             return;
         } else if (data.jumpUrl) {
             setTimeout(function () {
-                if (AdminLteApp.pjaxEnabled) {
-                    $.pjax({
-                        url: data.jumpUrl,
-                        container: AdminLteApp.$contentWrap,
-                        fragment: AdminLteApp.$contentWrap,
-                        timeout: 4000
-                    });
+                if (data.jumpUrl == 'reload-full-page') {
+                    window.location.reload();
                 } else {
-                    location.href = data.jumpUrl;
+                    if (AdminLteApp.pjaxEnabled) {
+                        $.pjax({
+                            url: data.jumpUrl,
+                            container: AdminLteApp.$contentWrap,
+                            fragment: AdminLteApp.$contentWrap,
+                            timeout: 4000
+                        });
+                    } else {
+                        location.href = data.jumpUrl;
+                    }
                 }
             }, time);
         }
