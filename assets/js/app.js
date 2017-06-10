@@ -285,6 +285,9 @@ function initAppFunctions() {
                     callback: {
                         normal: function () {
                             $target.removeClass('disabled').prop('disabled', false);
+                        },
+                        thrown: function () {
+                            $target.removeClass('disabled').prop('disabled', false);
                         }
                     }
                 };
@@ -425,13 +428,13 @@ function errorResponse(XMLHttpRequest, errorThrown, options) {
     if (errorThrown === 'Not Found') {
         $(AdminLteApp.$contentWrap).html("<section class='content'>" + XMLHttpRequest.responseText + "</section>");
         if (typeof options.callback.thrown === 'function') {
-            (options.callback.thrown)(data);
+            (options.callback.thrown)();
         }
     } else {
         wn.notificationBox.error(XMLHttpRequest.responseText ? XMLHttpRequest.responseText : '操作超时，请重新执行', '', 1500);
         if (typeof options.callback.thrown === 'function') {
             setTimeout(function () {
-                (options.callback.thrown)(data);
+                (options.callback.thrown)();
             }, 1500);
         }
     }
