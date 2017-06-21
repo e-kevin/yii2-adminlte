@@ -70,4 +70,13 @@ class ActiveForm extends baseActiveForm
         return Html::tag('div', implode("\n", $buttons), ['class' => 'form-actions text-center']);
     }
 
+    /**
+     * @inheritdoc
+     * @return ActiveField the created ActiveField object
+     */
+    public function field($model, $attribute, $options = [])
+    {
+        return parent::field($model, $attribute, $options);
+    }
+
 }
