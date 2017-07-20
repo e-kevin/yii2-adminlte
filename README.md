@@ -9,7 +9,7 @@ AdminLTE theme
  * Infobox-widget
  * Timeline widget 
  	- 效果图:http://almsaeedstudio.com/themes/AdminLTE/pages/UI/timeline.html
- 	- 使用方法请查看[Timeline.md](https://github.com/wonail/yii2-adminlte-widgets/Timeline.md)文件
+ 	- 使用方法请查看[Timeline.md](https://github.com/Wonail/yii2-adminlte/blob/master/widgets/Timeline.md)文件
 
 查看更多有关AdminLTE主题的部件
 * http://almsaeedstudio.com/themes/AdminLTE/pages/widgets.html
