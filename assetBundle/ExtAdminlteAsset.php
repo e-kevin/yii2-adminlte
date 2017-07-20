@@ -7,7 +7,7 @@ use \yii\web\AssetBundle;
 class ExtAdminlteAsset extends AssetBundle
 {
 
-    public $sourcePath = '@wonail/adminlte/assets';
+    public $sourcePath = '@vendor/wonail/yii2-adminlte/assets';
     public $js = [
         'js/admlteext.js',
     ];

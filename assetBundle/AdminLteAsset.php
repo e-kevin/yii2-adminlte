@@ -10,7 +10,7 @@ use yii\web\AssetBundle;
 class AdminLteAsset extends AssetBundle
 {
 
-    public $sourcePath = '@wonail/adminlte/assets';
+    public $sourcePath = '@vendor/wonail/yii2-adminlte/assets';
 
     public $css = [
         /**
