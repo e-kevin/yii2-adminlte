@@ -1,5 +1,4 @@
 <?php
-
 namespace wonail\adminlte\assetBundle;
 
 use yii\base\Exception;
