@@ -6,7 +6,7 @@ window.PJAX_ENABLED = true;
 /**
  * 是否使用调试模式，用于打印一些日志信息
  */
-window.DEBUG = true;
+window.DEBUG = false;
 
 var AdminLTEOptions = {
     animationSpeed: 'fast'
@@ -44,6 +44,8 @@ $(function () {
             $(document).on('pjax:end', $.proxy(this._changeActiveNavigationItem, this));
             $(document).on('pjax:error', $.proxy(this.catchException, this));
         }
+
+        this._changeActiveNavigationItem();
 
         window.onerror = $.proxy(this._logErrors, this);
     };
