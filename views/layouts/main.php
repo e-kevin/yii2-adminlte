@@ -8,11 +8,9 @@ use wonail\adminlte\assetBundle\AdminLteAsset;
 
 AdminLteAsset::register($this);
 
-$isPjax = Yii::$app->getRequest()->getIsPjax();
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 ?>
 <?php $this->beginPage() ?>
-<?php if (!$isPjax) : //pjax:START ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
@@ -56,14 +54,10 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
         ['directoryAsset' => $directoryAsset]
     ) ?>
 
-    <?php endif; //pjax:end ?>
-
     <?= $this->render(
         'content.php',
         ['content' => $content]
     ) ?>
-
-    <?php if (!$isPjax) : //pjax:START ?>
 
     <?= $this->render(
         'control_sidebar.php'
@@ -86,4 +80,3 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
 
 </html>
 <?php $this->endPage() ?>
-<?php endif; //pjax:end ?>
