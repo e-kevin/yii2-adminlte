@@ -13,12 +13,12 @@ use yii\widgets\Breadcrumbs;
             <?php
             if ($this->title !== null) {
                 echo Html::encode($this->title);
-                echo isset($this->params['breadcrumb_description']) ? '&nbsp;<small>' . Html::encode($this->params['breadcrumb_description']) . '</small>' : '';
+                echo isset($this->params['breadcrumb_description']) ? '&nbsp;&nbsp;<small>' . Html::encode($this->params['breadcrumb_description']) . '</small>' : '';
             } else {
                 echo Inflector::camel2words(
                     Inflector::id2camel($this->context->module->id)
                 );
-                echo ($this->context->module->id !== Yii::$app->id) ? '&nbsp;<small>Module</small>' : '';
+                echo ($this->context->module->id !== Yii::$app->id) ? '&nbsp;&nbsp;<small>Module</small>' : '';
             }
             ?>
         </h1>

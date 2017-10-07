@@ -274,7 +274,7 @@ function initAppFunctions() {
         /*
          * All the form submission change to the AJAX mode
          */
-        $(document).on('submit', 'form:not(.kv-export-form)', function (e) {
+        $(document).on('submit', 'form:not(.kv-export-form, .disable-default)', function (e) {
             e.preventDefault();
 
             var $form = $(this),
