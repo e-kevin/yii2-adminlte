@@ -25,7 +25,7 @@
     "require": {
         "yiisoft/yii2": "2.*",
         "rmrevin/yii2-fontawesome": "~2.9",
-        "almasaeed2010/adminlte": "~2.0",
+        "almasaeed2010/adminlte": "~2.3.11",
         "kartik-v/yii2-grid": "@dev",
         "wonail/yii2-base": "~0.0.1",
         "wonail/yii2-widget-scrolltop": "~1.0"
